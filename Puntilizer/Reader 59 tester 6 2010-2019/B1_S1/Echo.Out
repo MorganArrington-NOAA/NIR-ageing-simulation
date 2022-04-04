@@ -1,0 +1,56 @@
+# Maximum readers: 2
+# Number of data sets: 1
+# Number of points per data file:  31
+# Number of readers per data file:  2
+# Readers per data set: 
+ 1 2
+# Lowest age: 1
+# Maxage age: 14
+# RefAge (by data set):  10
+# First age with estimated proportion (by data set):  0
+# Last age with estimated proportion (by data set):  10
+# Bias options (by READER):  1 0
+# Sigma options (by READER):  1 -1
+# Effective sample size by data set (<0 ignore):  0
+# Use PIN file (1 = Yes): 0
+Number of bias parameters 1
+Number of variance parameters 1
+
+The data
+ 14 5 4
+ 2 8 8
+ 30 6 6
+ 2 7 7
+ 17 3 3
+ 6 2 3
+ 45 2 2
+ 53 4 4
+ 8 3 4
+ 26 5 5
+ 35 1 1
+ 6 7 6
+ 3 6 5
+ 1 6 4
+ 11 4 5
+ 3 5 6
+ 2 5 3
+ 1 7 5
+ 5 2 1
+ 4 9 9
+ 1 9 8
+ 2 9 10
+ 3 6 7
+ 1 10 10
+ 1 5 7
+ 1 14 12
+ 2 8 7
+ 7 4 3
+ 1 8 9
+ 1 1 2
+ 3 4 6
+123456
+Structure of the data set
+Data set # Entries Reader boolean
+ 1 31 1 2
+ReaderSumm
+ 1 2 1
