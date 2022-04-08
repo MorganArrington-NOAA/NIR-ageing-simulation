@@ -14,11 +14,11 @@ library(mdatools)
 
 #######################
 # Load in 2017 spectral data
-spec_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/Data/Spectra_2010-2018_n9427.csv")
+spec_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/Spectra_2010-2018_n9427.csv")
 
 ###################
 # join meta_data so we can filter by reader index
-meta_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/Data/MetaData_2010-2019_n14579.csv")
+meta_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/MetaData_2010-2019_n14579.csv")
 
 meta_dat$Code <- as.factor(meta_dat$Code)
 
@@ -55,19 +55,19 @@ rm(meta_dat)
 
 # Load in ageing error matrices for each reader in 2013
 # Reader 3 - B1_S2
-agemat_3 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 3 tester 6 2010-2019/B1_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+agemat_3 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 3 tester 6 2010-2019/B1_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
 
 # Reader 8 - B2_S2
-agemat_8 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 8 tester 6 2010-2019/B2_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+agemat_8 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 8 tester 6 2010-2019/B2_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
 
 # Reader 21 - B2_S1_S3
-agemat_21 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 21 tester 6 2010-2019/B2_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+agemat_21 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 21 tester 6 2010-2019/B2_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
 
 # Reader 59 - B0_S1_S3
-agemat_59 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 59 tester 6 2010-2019/B0_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+agemat_59 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 59 tester 6 2010-2019/B0_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
 
 # Reader 71 - B2_S1 
-agemat_71 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 71 tester 6 2010-2019/B2_S1/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+agemat_71 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 71 tester 6 2010-2019/B2_S1/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
 
 
 # Keep only rows that match ages in all_dat dataset (age 1-13)
@@ -87,22 +87,22 @@ agemat71_use <- t(agemat_match_71) #transpose so that estimated ages is along ve
 
 # test loop concept
 
-test <- if (all_dat[1,]$reader_index == 3){agemat3_use[all_dat[1,]$Age,]} else {
-  if (all_dat[1,]$reader_index == 8) {agemat8_use[all_dat[1,]$Age,]} else {
-    if(all_dat[1,]$reader_index == 21) {agemat21_use[all_dat[1,]$Age,]} else {
-      if(all_dat[1,]$reader_index == 59) {agemat59_use[all_dat[1,]$Age,]} else{
-        if(all_dat[1,]$reader_index == 71){agemat71_use[all_dat[1,]$Age,]}
-      }
-    }
-  }
-}
+# test <- if (all_dat[1,]$reader_index == 3){agemat3_use[all_dat[1,]$Age,]} else {
+#   if (all_dat[1,]$reader_index == 8) {agemat8_use[all_dat[1,]$Age,]} else {
+#     if(all_dat[1,]$reader_index == 21) {agemat21_use[all_dat[1,]$Age,]} else {
+#       if(all_dat[1,]$reader_index == 59) {agemat59_use[all_dat[1,]$Age,]} else{
+#         if(all_dat[1,]$reader_index == 71){agemat71_use[all_dat[1,]$Age,]}
+#       }
+#     }
+#   }
+# }
 
 # Full sample loop
-
 samp <- list()
 age_jit <- vector()
 Iter <- 10
 
+system.time({
 set.seed(13)
 for (k in 1:Iter) { #each loop iterates through agemat rows for ages 1:13 and samples from numbers 1-13 based on probabilities
   for (i in 1:nrow(all_dat)) {
@@ -112,7 +112,7 @@ for (k in 1:Iter) { #each loop iterates through agemat rows for ages 1:13 and sa
   }
   samp[[k]] <- age_jit
 }
-
+})
 
 # test <- data.frame(samp[[1]],all_dat)
 # colnames(test)[1] <- "jittered_age"
