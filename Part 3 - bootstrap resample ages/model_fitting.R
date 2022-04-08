@@ -5,6 +5,8 @@
 library(dplyr)
 library(purrr)
 library(mdatools)
+library(furrr)
+library(future)
 
 # library(plotly)
 # library(stringr)
@@ -15,12 +17,21 @@ library(mdatools)
 # Might need to store jittered age preds in a matrix, each column different iter. Then fit models in a loop on each subsequent row of response data. Extract only the predictions.
 
 jitter_age_mod <- function(samp) {
-  mod <- pls(all_dat[, c(6:505)], samp, scale = TRUE, ncomp = 10, cv = 50)
+  mod <- pls(all_dat[, c(7:506)], samp, scale = TRUE, ncomp = 10, cv = 50)
   x <- mod$cvres$ncomp.selected #allow each to use optimal ncomp
   mod$cvres$y.pred[,x,1] #use x to select preds from matrix
 }
 
-jitter_mod_list <- map(samp, jitter_age_mod)
+# system.time({
+# jitter_mod_list <- map(samp, jitter_age_mod)})
+
+## Try this in parallel
+n_cores <- availableCores()-2
+plan(multisession, workers = n_cores)
+
+system.time({
+jitter_mod_list_par <- future_map(samp, jitter_age_mod)})
+
 
 # # Pull out predictions and make a matrix
 # extract_preds <- function(mod) {

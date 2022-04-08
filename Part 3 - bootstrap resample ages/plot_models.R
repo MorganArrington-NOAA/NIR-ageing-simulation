@@ -16,17 +16,7 @@ preds_df <- read.csv("C:/Users/marri/OneDrive/Documents/AFSC A&G Contract/Simula
 preds_df <- preds_df[,-1]
 
 # Fit model to all data with original age as baseline
-# join meta_data so we can filter by reader index
-meta_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/Data/MetaData_2010-2019_n14579.csv")
 
-meta_dat$Code <- as.factor(meta_dat$Code)
-
-all_dat <- left_join(spec_dat, meta_dat, by = "Code")
-
-# Filter
-all_dat <- filter(all_dat, Year == "2013")
-all_dat <- filter(all_dat, reader_index!= "6") #Delsa used as tester
-all_dat <- filter(all_dat, reader_index != "68") #didn't run puntilizer for this one yet, also not many data points
 
 og_mod <- pls(all_dat[, c(7:506)], all_dat$Age, scale = TRUE, ncomp = 10, cv = 50)
 

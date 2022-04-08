@@ -14,11 +14,19 @@ library(doParallel)
 
 #######################
 # Load in 2017 spectral data
+<<<<<<< HEAD
 spec_dat <- read.csv("Z:/NIR-ageing-simulation/Data/Spectra_2010-2018_n9427.csv")
 
 ###################
 # join meta_data so we can filter by reader index
 meta_dat <- read.csv("Z:/NIR-ageing-simulation/Data/MetaData_2010-2019_n14579.csv")
+=======
+spec_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/Spectra_2010-2018_n9427.csv")
+
+###################
+# join meta_data so we can filter by reader index
+meta_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/MetaData_2010-2019_n14579.csv")
+>>>>>>> 3c7f55b625b9efbc225467eb6ffa08674cd8be58
 
 meta_dat$Code <- as.factor(meta_dat$Code)
 
@@ -56,6 +64,7 @@ rm(meta_dat)
 
 # Load in ageing error matrices for each reader in 2013
 # Reader 3 - B1_S2
+
 agemat_3 <- read.csv("Z:/NIR-ageing-simulation/Puntilizer/Reader 3 tester 6 2010-2019/B1_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
 
 # Reader 8 - B2_S2
@@ -69,6 +78,21 @@ agemat_59 <- read.csv("Z:/NIR-ageing-simulation/Puntilizer/Reader 59 tester 6 20
 
 # Reader 71 - B2_S1 
 agemat_71 <- read.csv("Z:/NIR-ageing-simulation/Puntilizer/Reader 71 tester 6 2010-2019/B2_S1/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
+agemat_3 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 3 tester 6 2010-2019/B1_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
+# Reader 8 - B2_S2
+agemat_8 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 8 tester 6 2010-2019/B2_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
+# Reader 21 - B2_S1_S3
+agemat_21 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 21 tester 6 2010-2019/B2_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
+# Reader 59 - B0_S1_S3
+agemat_59 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 59 tester 6 2010-2019/B0_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
+# Reader 71 - B2_S1 
+agemat_71 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 71 tester 6 2010-2019/B2_S1/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
 
 # Keep only rows that match ages in all_dat dataset (age 1-13)
 #### IDEA FOR IMPROVEMENT:  maybe try to correct specific records based on reader-specific age-reading error matrices
@@ -86,7 +110,7 @@ agemat59_use <- t(agemat_match_59) #transpose so that estimated ages is along ve
 agemat71_use <- t(agemat_match_71) #transpose so that estimated ages is along vertical, gives us probability of each true age given an age estimate.
 
 # test loop concept
-# 
+
 # test <- if (all_dat[1,]$reader_index == 3){agemat3_use[all_dat[1,]$Age,]} else {
 #   if (all_dat[1,]$reader_index == 8) {agemat8_use[all_dat[1,]$Age,]} else {
 #     if(all_dat[1,]$reader_index == 21) {agemat21_use[all_dat[1,]$Age,]} else {
@@ -98,7 +122,6 @@ agemat71_use <- t(agemat_match_71) #transpose so that estimated ages is along ve
 # }
 
 # Full sample loop
-
 samp <- list()
 age_jit <- vector()
 Iter <- 10000
@@ -118,6 +141,7 @@ n_cores <- detectCores()-2
 cl <- makeCluster(n_cores)
 registerDoParallel(cl)
 
+system.time({
 set.seed(13)
 samp <- foreach(k=1:Iter) %dopar% {#each loop iterates through agemat rows for ages 1:13 and samples from numbers 1-13 based on probabilities
   for (i in 1:nrow(all_dat)) {
@@ -127,8 +151,12 @@ samp <- foreach(k=1:Iter) %dopar% {#each loop iterates through agemat rows for a
   }
   age_jit
 }
+<<<<<<< HEAD
 
 save(samp, file = "Z:/NIR-ageing-simulation/Data/boot_dat_10000.rda")
+=======
+})
+>>>>>>> 3c7f55b625b9efbc225467eb6ffa08674cd8be58
 
 # test <- data.frame(samp[[1]],all_dat)
 # colnames(test)[1] <- "jittered_age"
