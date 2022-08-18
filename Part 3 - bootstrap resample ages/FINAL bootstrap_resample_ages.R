@@ -36,7 +36,7 @@ counts <- all_dat%>% #see how many specimens per age
 #######################
 # Plot raw spectra - 
 ## First need to pivot_longer to get column of absorbance
-all_dat_L<-all_dat%>%tidyr::pivot_longer(.,cols=c(6:505),names_to="wavenumber",values_to="absorbance", names_prefix = "x") 
+all_dat_L<-all_dat%>%tidyr::pivot_longer(.,cols=c(7:506),names_to="wavenumber",values_to="absorbance", names_prefix = "x") 
 
 # Clean up data
 all_dat_L$Age <- as.factor(all_dat_L$Age)
@@ -102,7 +102,6 @@ samp <- list()
 age_jit <- vector()
 Iter <- 10
 
-system.time({
 set.seed(13)
 for (k in 1:Iter) { #each loop iterates through agemat rows for ages 1:13 and samples from numbers 1-13 based on probabilities
   for (i in 1:nrow(all_dat)) {
@@ -112,7 +111,7 @@ for (k in 1:Iter) { #each loop iterates through agemat rows for ages 1:13 and sa
   }
   samp[[k]] <- age_jit
 }
-})
+
 
 # test <- data.frame(samp[[1]],all_dat)
 # colnames(test)[1] <- "jittered_age"

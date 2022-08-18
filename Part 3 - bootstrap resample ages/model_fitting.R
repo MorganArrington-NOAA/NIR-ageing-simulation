@@ -29,8 +29,7 @@ jitter_age_mod <- function(samp) {
 n_cores <- availableCores()-2
 plan(multisession, workers = n_cores)
 
-system.time({
-jitter_mod_list_par <- future_map(samp, jitter_age_mod)})
+jitter_mod_list_par <- future_map(samp, jitter_age_mod)
 
 
 # # Pull out predictions and make a matrix
@@ -43,7 +42,7 @@ jitter_mod_list_par <- future_map(samp, jitter_age_mod)})
 
 # Make a dataframe that has known_age, error_age, known_age_preds, error_age_preds from each Iter
 
-jitter_mod_preds <- data.frame(matrix(unlist(jitter_mod_list), ncol=Iter, byrow=F)) 
+jitter_mod_preds <- data.frame(matrix(unlist(jitter_mod_list_par), ncol=Iter, byrow=F)) 
 
 jitter_age <- data.frame(matrix(unlist(samp), ncol = Iter, byrow = F))
 
@@ -62,4 +61,4 @@ names <- c("ID", colnames(age_df), names1, names2)
 colnames(preds_df) <- paste(names)
 
 # Output data
-write.csv(preds_df, "C:/Users/marri/OneDrive/Documents/AFSC A&G Contract/Simulation Project/Data/part 3 preds_indageerror_iter10_2013.csv") # preds_df - this can be used to calculate the rest
+write.csv(preds_df, "C:/Users/marri/OneDrive/Documents/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/part 3 preds_indageerror_iter10_2013.csv") # preds_df - this can be used to calculate the rest
