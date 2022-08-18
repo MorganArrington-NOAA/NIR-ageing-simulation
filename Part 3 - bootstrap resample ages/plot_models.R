@@ -11,7 +11,7 @@ library(MLmetrics)
 # 
 
 # Load data
-preds_df <- read.csv("C:/Users/marri/OneDrive/Documents/AFSC A&G Contract/Simulation Project/Data/part 3 preds_indageerror_iter10_2013.csv") #simulated data
+preds_df <- read.csv("C:/Users/marri/OneDrive/Documents/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/part 3 preds_indageerror_iter10_2013.csv") #simulated data
 
 preds_df <- preds_df[,-1]
 
