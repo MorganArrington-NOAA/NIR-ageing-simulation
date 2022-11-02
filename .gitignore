@@ -41,6 +41,7 @@ vignettes/*.pdf
 
 # Data
 *.csv
+*.xlsx
 
 # Presentations
 *.ppt
