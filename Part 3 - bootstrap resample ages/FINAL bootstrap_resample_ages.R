@@ -6,14 +6,20 @@ library(dplyr)
 library(purrr)
 library(ggpubr)
 library(plotly)
-
-library(stringr)
-library(mdatools)
+library(doParallel)
+# library(stringr)
+# library(mdatools)
 # First, let's use data just from 2013
 # No errors, and no instrument off-set issues
 
 #######################
 # Load in 2017 spectral data
+spec_dat <- read.csv("Z:/NIR-ageing-simulation/Data/Spectra_2010-2018_n9427.csv")
+
+###################
+# join meta_data so we can filter by reader index
+meta_dat <- read.csv("Z:/NIR-ageing-simulation/Data/MetaData_2010-2019_n14579.csv")
+
 spec_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/Spectra_2010-2018_n9427.csv")
 
 ###################
@@ -25,7 +31,7 @@ meta_dat$Code <- as.factor(meta_dat$Code)
 all_dat <- left_join(spec_dat, meta_dat, by = "Code")
 ###################
 
-all_dat <- filter(all_dat, Year == "2013")
+# all_dat <- filter(all_dat, Year == "2013")
 all_dat <- filter(all_dat, reader_index!= "6")
 all_dat <- filter(all_dat, reader_index != "68")
 
@@ -33,7 +39,9 @@ counts <- all_dat%>% #see how many specimens per age
   group_by(Age)%>%
   summarize(n())
 
+save(all_dat, file = "Z:/NIR-ageing-simulation/Data/all_dat_filt.rda")
 #######################
+<<<<<<< HEAD
 # Plot raw spectra - 
 ## First need to pivot_longer to get column of absorbance
 all_dat_L<-all_dat%>%tidyr::pivot_longer(.,cols=c(7:506),names_to="wavenumber",values_to="absorbance", names_prefix = "x") 
@@ -47,6 +55,21 @@ ggplotly(ggplot(all_dat_L)+
            geom_line(aes(x = wavenumber, y = absorbance, group_by = Code, color = Age))+
            scale_x_reverse()+
            theme_classic())
+=======
+# # Plot raw spectra - 
+# ## First need to pivot_longer to get column of absorbance
+# all_dat_L<-all_dat%>%tidyr::pivot_longer(.,cols=c(6:505),names_to="wavenumber",values_to="absorbance", names_prefix = "x") 
+# 
+# # Clean up data
+# all_dat_L$read_age <- as.factor(all_dat_L$read_age)
+# all_dat_L$wavenumber <- as.numeric(all_dat_L$wavenumber)
+# 
+# # Look at raw spectra
+# ggplotly(ggplot(all_dat_L)+
+#            geom_line(aes(x = wavenumber, y = absorbance, group_by = Code, color = Age))+
+#            scale_x_reverse()+
+#            theme_classic())
+>>>>>>> f36c20af086545d64d22d9a9aac36de23f2ac017
 
 # Clear environment to speed up processing
 rm(all_dat_L)
@@ -55,6 +78,21 @@ rm(meta_dat)
 
 # Load in ageing error matrices for each reader in 2013
 # Reader 3 - B1_S2
+
+agemat_3 <- read.csv("Z:/NIR-ageing-simulation/Puntilizer/Reader 3 tester 6 2010-2019/B1_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
+# Reader 8 - B2_S2
+agemat_8 <- read.csv("Z:/NIR-ageing-simulation/Puntilizer/Reader 8 tester 6 2010-2019/B2_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
+# Reader 21 - B2_S1_S3
+agemat_21 <- read.csv("Z:/NIR-ageing-simulation/Puntilizer/Reader 21 tester 6 2010-2019/B2_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
+# Reader 59 - B0_S1_S3
+agemat_59 <- read.csv("Z:/NIR-ageing-simulation/Puntilizer/Reader 59 tester 6 2010-2019/B0_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
+# Reader 71 - B2_S1 
+agemat_71 <- read.csv("Z:/NIR-ageing-simulation/Puntilizer/Reader 71 tester 6 2010-2019/B2_S1/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+
 agemat_3 <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Reader 3 tester 6 2010-2019/B1_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
 
 # Reader 8 - B2_S2
@@ -100,33 +138,36 @@ agemat71_use <- t(agemat_match_71) #transpose so that estimated ages is along ve
 # Full sample loop
 samp <- list()
 age_jit <- vector()
-Iter <- 10
+Iter <- 10000
+
+# set.seed(13)
+# for (k in 1:Iter) { #each loop iterates through agemat rows for ages 1:13 and samples from numbers 1-13 based on probabilities
+#   for (i in 1:nrow(all_dat)) {
+#   age_jit[i]<- sample(x = c(1:14), #drawing from numbers 0-14
+#                     size = 1,
+#                     prob = if (all_dat[i,]$reader_index == 3){agemat3_use[all_dat[i,]$Age,]} else {if (all_dat[i,]$reader_index == 8) {agemat8_use[all_dat[i,]$Age,]} else {if(all_dat[i,]$reader_index == 21) {agemat21_use[all_dat[i,]$Age,]} else {if(all_dat[i,]$reader_index == 59) {agemat59_use[all_dat[i,]$Age,]} else{if(all_dat[i,]$reader_index == 71){agemat71_use[all_dat[i,]$Age,]}}}}},replace = TRUE) #select row == to all_dat$Age of probabilities for age 1 - 13
+#   }
+#   samp[[k]] <- age_jit
+# }
+
+# Can I do this in parallel?
+n_cores <- detectCores()-2
+cl <- makeCluster(n_cores)
+registerDoParallel(cl)
 
 set.seed(13)
-for (k in 1:Iter) { #each loop iterates through agemat rows for ages 1:13 and samples from numbers 1-13 based on probabilities
+samp <- foreach(k=1:Iter) %dopar% {#each loop iterates through agemat rows for ages 1:13 and samples from numbers 1-13 based on probabilities
   for (i in 1:nrow(all_dat)) {
-  age_jit[i]<- sample(x = c(1:14), #drawing from numbers 0-14
-                    size = 1, 
-                    prob = if (all_dat[i,]$reader_index == 3){agemat3_use[all_dat[i,]$Age,]} else {if (all_dat[i,]$reader_index == 8) {agemat8_use[all_dat[i,]$Age,]} else {if(all_dat[i,]$reader_index == 21) {agemat21_use[all_dat[i,]$Age,]} else {if(all_dat[i,]$reader_index == 59) {agemat59_use[all_dat[i,]$Age,]} else{if(all_dat[i,]$reader_index == 71){agemat71_use[all_dat[i,]$Age,]}}}}},replace = TRUE) #select row == to all_dat$Age of probabilities for age 1 - 13
+    age_jit[i]<- sample(x = c(1:14), #drawing from numbers 0-14
+                        size = 1, 
+                        prob = if (all_dat[i,]$reader_index == 3){agemat3_use[all_dat[i,]$Age,]} else {if (all_dat[i,]$reader_index == 8) {agemat8_use[all_dat[i,]$Age,]} else {if(all_dat[i,]$reader_index == 21) {agemat21_use[all_dat[i,]$Age,]} else {if(all_dat[i,]$reader_index == 59) {agemat59_use[all_dat[i,]$Age,]} else{if(all_dat[i,]$reader_index == 71){agemat71_use[all_dat[i,]$Age,]}}}}},replace = TRUE) #select row == to all_dat$Age of probabilities for age 1 - 13
   }
-  samp[[k]] <- age_jit
+  age_jit
 }
 
 
-# test <- data.frame(samp[[1]],all_dat)
-# colnames(test)[1] <- "jittered_age"
-# 
-# # write function to merge age_jit with spectra
-# # might not actually need to do this step
-# merge_dat <- function(df){
-#   sim_df <- data.frame(df, all_dat)
-#   colnames(sim_df)[1] <- "jittered_age"
-#   sim_df
-# }
-# 
-# jitter_samp <- map(samp, merge_dat)
-# 
-# test_df <- jitter_samp[[1]]
+save(samp, file = "Z:/NIR-ageing-simulation/Data/boot_dat_10000.rda")
+
 # 
 rm(test)
 rm(test_df)

@@ -36,13 +36,13 @@ vignettes/*.pdf
 *.knit.md
 
 # R Environment Variables
-.Renviron
+*.Renviron
 
 # Data
-.csv
+*.csv
 
 # Presentations
-.ppt
+*.ppt
 
 # Figures
-.pdf
+*.pdf

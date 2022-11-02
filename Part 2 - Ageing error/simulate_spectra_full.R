@@ -4,10 +4,11 @@ library(plotly)
 library(stringr)
 library(mdatools)
 
-# Load in data
-raw_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/Data/Spectra_2010-2018_n9428.csv")
 
-sim_age_data <- read.csv("~/AFSC A&G Contract/Simulation Project/Data/simulated age data mat.csv") #simulated age data
+# Load in data
+raw_dat <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/Spectra_2010-2018_n9427.csv")
+
+sim_age_data <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/simulated age data mat.csv") #simulated age data
 
 #####################   
 # First look at number of specimens at each age
@@ -19,7 +20,7 @@ counts <- raw_dat%>%
 rm(counts)
 
 ## First need to pivot_longer to get column of absorbance
-raw_dat_L<-raw_dat%>%tidyr::pivot_longer(.,cols=c(6:ncol(raw_dat)),names_to="wavenumber",values_to="absorbance", names_prefix = "x") 
+raw_dat_L<-raw_dat%>%tidyr::pivot_longer(.,cols=c(7:ncol(raw_dat)),names_to="wavenumber",values_to="absorbance", names_prefix = "x") 
 
 # Clean up data
 raw_dat_L$Age <- as.factor(raw_dat_L$Age)

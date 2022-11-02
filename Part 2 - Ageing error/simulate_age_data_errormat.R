@@ -18,7 +18,7 @@ agemat <- matrix(data = c(0.999988,	1.15E-05,	0,	0,	0,
 Iter <- 5
 
 
-sim <- matrix( , nrow = Iter, ncol = max(df$age))
+sim <- matrix(, nrow = Iter, ncol = max(df$age))
 
 for (i in 1:max(df$age)) {
   sim[,i] <- sample(x = c(1:5),
@@ -27,51 +27,40 @@ for (i in 1:max(df$age)) {
                     replace = TRUE)
 }
 
-# Full scale
-# agemat <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/B2_S3_S1/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
 
-# Load in ageing error matrices for each reader in 2013
-# Reader 3 - B1_S2
-agemat_3 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 3 tester 6 2010-2019/B1_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+# FULL
 
-# Reader 8 - B2_S2
-agemat_8 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 8 tester 6 2010-2019/B2_S2/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+# All readers combined for 2013-2018 (to match spectra) was B2_S3_S1. This is Reader 1 bias 2, and curvilinear CV (3 parameter hotellings)
 
-# Reader 21 - B2_S1_S3
-agemat_21 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 21 tester 6 2010-2019/B2_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
+## Load data - all readers combined into "reader 1"
+agemat <- read.csv("~/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Puntilizer/Model comparisons all data 2013-2018/B2_S3_S1/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
 
-# Reader 59 - B0_S1_S3
-agemat_59 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 59 tester 6 2010-2019/B0_S1_S3/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
-
-# Reader 71 - B2_S1 
-agemat_71 <- read.csv("~/AFSC A&G Contract/Simulation Project/Puntilizer/Reader 71 tester 6 2010-2019/B2_S1/ageing error matrix Reader 1.csv", row.names=1) # load in ageing error matrix 
-
-Iter <- 10
+Iter <- 100
 
 known_age <- rep(0:14, each = Iter) #make vector of known ages
 
-sim_3 <- matrix( , nrow = Iter, ncol = 15) #initiate matrix for simulation
+sim <- matrix( , nrow = Iter, ncol = 15) #initiate matrix for simulation
 
 set.seed(13)
-for (i in 1:15) { #each loop iterates through agemat rows for ages 0:20 and samples from numbers 0-20 based on probabilities
-  sim_3[,i] <- sample(x = c(0:14), #drawing from numbers 0-20
-                    size = Iter, #can set sample size per iteration/age
-                    prob = agemat_3[i,], #iterate through rows of probabilities for age 0 - 20
-                    replace = TRUE)
+for (i in 1:15) { #each loop iterates through agemat rows for ages 0:20 and samples from numbers 0-14 based on probabilities
+  sim[,i] <- sample(x = c(0:14), #drawing from numbers 0-20
+                      size = Iter, #can set sample size per iteration/age
+                      prob = agemat[i,], #iterate through rows of probabilities for age 0 - 14
+                      replace = TRUE)
 }
 
-error_age <- c(sim_3) #concatonate matrix into vector
+error_age <- c(sim) #concatonate matrix into vector
 
-sim_3_data <- data.frame(cbind(known_age, error_age)) #join "known_age" and simulated "error_age" 
+sim_data <- data.frame(cbind(known_age, error_age)) #join "known_age" and simulated "error_age" 
 
 # Visualize
 
-ggplot(sim_3_data)+
+ggplot(sim_data)+
   geom_point(aes(known_age, error_age), alpha = .2)+
   geom_abline(slope = 1, intercept = 0)
-  
+
 # Figure
-ggplot(sim_71_data)+
+ggplot(sim_data)+
   geom_point(aes(x = known_age, y = error_age), color = "grey40", alpha = .5)+
   scale_x_continuous(limits = c(0,14), breaks=seq(0,14,1))+
   scale_y_continuous(limits = c(0,14), breaks=seq(0,14,1))+
@@ -79,9 +68,8 @@ ggplot(sim_71_data)+
   geom_abline(slope = 1, intercept = 0)+
   labs(x = "True age",
        y = "Simulated age estimate",
-       subtitle = "Pacific cod simulated age data - reader index 71")+
+       subtitle = "Pacific cod simulated age data")+
   theme_classic()
 
 # Save data 
-
-write.csv(x = sim_data, file = "C:/Users/marri/OneDrive/Documents/AFSC A&G Contract/Simulation Project/Data/simulated age data mat.csv")
+write.csv(x = sim_data, file = "C:/Users/marri/OneDrive/Documents/AFSC A&G Contract/Simulation Project/NIR-ageing-simulation/Data/simulated age data mat.csv")
