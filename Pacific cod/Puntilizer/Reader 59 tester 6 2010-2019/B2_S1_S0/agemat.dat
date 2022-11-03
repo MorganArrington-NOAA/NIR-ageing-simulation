@@ -1,0 +1,79 @@
+# Maximum number of readers
+2
+# Number of data sets
+1
+# Number of points per data set
+31
+# Readers per data set
+2
+# Which readers per data set
+1 2
+# Minimum age
+1
+# Maximum age
+14
+# Reference age
+10
+# Minus groups
+0
+# Plus groups
+10
+# Option for bias
+2 0
+# Option for standard deviation
+1 0
+# Option for effective sample size
+0
+# Use Par File (1=Yes)
+0
+
+# Number and location of knots for any splines
+
+# Min, Max, Init, Phase for Bias
+0.001 10 1 2
+-10 1 0.01 2
+0.001 28 14 2
+
+# Min, Max, Init, Phase for Sigma
+0.001 3 0.1 2
+
+# Min, Max, Phase for Probs
+-20 20 2
+
+# Min, Max, Init, Phase for slopes
+-10 0 0 1
+
+# Data set
+14 5 4
+2 8 8
+30 6 6
+2 7 7
+17 3 3
+6 2 3
+45 2 2
+53 4 4
+8 3 4
+26 5 5
+35 1 1
+6 7 6
+3 6 5
+1 6 4
+11 4 5
+3 5 6
+2 5 3
+1 7 5
+5 2 1
+4 9 9
+1 9 8
+2 9 10
+3 6 7
+1 10 10
+1 5 7
+1 14 12
+2 8 7
+7 4 3
+1 8 9
+1 1 2
+3 4 6
+# Test number
+123456
